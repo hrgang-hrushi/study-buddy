@@ -158,7 +158,64 @@
   .note-tags{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
   .note-tag{font-size:11px;padding:3px 8px;border-radius:20px;background:var(--surface2);color:var(--muted);border:0.5px solid var(--border)}
 
-  /* ─── LOADING STATE ─── */
+  /* ─── TIMER PANEL ─── */
+.timer-panel{padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;height:100%}
+.timer-display{font-size:64px;font-weight:300;font-family:var(--mono);color:var(--text)}
+.timer-controls{display:flex;gap:12px}
+.timer-btn{padding:12px 24px;border-radius:var(--r);font-size:14px;font-weight:500;cursor:pointer;border:0.5px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--font);transition:all .15s}
+.timer-btn:hover{background:var(--surface3)}
+.timer-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.timer-presets{display:flex;gap:8px}
+.timer-preset{padding:8px 16px;border-radius:var(--r);font-size:12px;cursor:pointer;border:0.5px solid var(--border);background:none;color:var(--muted);font-family:var(--font)}
+.timer-preset.active{color:var(--accent);border-color:var(--accent)}
+
+/* ─── SEARCH PANEL ─── */
+.search-panel{padding:20px;display:flex;flex-direction:column;gap:12px;height:100%;overflow:hidden}
+.search-input{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--r);padding:12px 14px;font-size:14px;color:var(--text);font-family:var(--font);outline:none;width:100%}
+.search-input:focus{border-color:var(--accent)}
+.search-results{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.search-result{padding:12px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);cursor:pointer}
+.search-result:hover{border-color:var(--accent)}
+.search-result-q{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px}
+.search-result-a{font-size:12px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ─── BOOKMARKS PANEL ─── */
+.bookmarks-panel{padding:20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+.bookmark-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r2);padding:14px;cursor:pointer}
+.bookmark-card:hover{border-color:var(--accent)}
+.bookmark-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bookmark-title{font-size:13px;font-weight:500;color:var(--text)}
+.bookmark-actions{display:flex;gap:8px}
+.bookmark-action{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;padding:2px}
+.bookmark-action:hover{color:var(--accent)}
+.bookmark-text{font-size:12px;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.bookmark-date{font-size:11px;color:var(--subtle);margin-top:8px}
+
+/* ─── STATS PANEL ─── */
+.stats-panel{padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stats-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r2);padding:16px;text-align:center}
+.stats-value{font-size:28px;font-weight:500;color:var(--accent);font-family:var(--mono)}
+.stats-label{font-size:12px;color:var(--muted);margin-top:4px}
+.stats-row{display:flex;gap:12px}
+.stats-row .stats-card{flex:1}
+
+/* ─── SETTINGS PANEL ─── */
+.settings-panel{padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+.settings-section{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r2);padding:16px}
+.settings-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:12px;padding-bottom:8px;border-bottom:0.5px solid var(--border)}
+.settings-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+.settings-label{font-size:13px;color:var(--muted)}
+.settings-btn{padding:8px 16px;border-radius:var(--r);font-size:12px;cursor:pointer;border:0.5px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--font)}
+.settings-btn:hover{background:var(--surface3)}
+
+/* ─── VOICE & COPY ─── */
+.msg-actions{display:flex;gap:8px;margin-top:8px;opacity:0;transition:opacity .15s}
+.msg:hover .msg-actions{opacity:1}
+.msg-action-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:4px 8px;border-radius:4px;display:flex;align-items:center;gap:4px}
+.msg-action-btn:hover{background:var(--surface2);color:var(--accent)}
+.voice-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:8px;font-size:14px}
+.voice-btn:hover{color:var(--accent)}
   .loading-bar{height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:1px;margin:0 -15px}
   @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
   .hidden{display:none!important}
@@ -230,6 +287,26 @@
     <div class="sb-item" onclick="switchPanel('notes',this)">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 3h10v10H3z" rx="1"/><path d="M5 6h6M5 9h4" stroke-linecap="round"/></svg>
       Notes
+    </div>
+    <div class="sb-item" onclick="switchPanel('timer',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l2 2" stroke-linecap="round"/></svg>
+      Timer
+    </div>
+    <div class="sb-item" onclick="switchPanel('search',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3" stroke-linecap="round"/></svg>
+      Search
+    </div>
+    <div class="sb-item" onclick="switchPanel('bookmarks',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 2h8v12l-4-2-4 2V2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Bookmarks
+    </div>
+    <div class="sb-item" onclick="switchPanel('stats',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 14V8l4 4 4-6 4 4v4H2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Stats
+    </div>
+    <div class="sb-item" onclick="switchPanel('settings',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M3 13l1.5-1.5M11.5 4.5L13 3" stroke-linecap="round"/></svg>
+      Settings
     </div>
 
     <div class="sb-spacer"></div>
@@ -376,7 +453,114 @@
             <span class="note-tag">Algorithms</span>
           </div>
         </div>
-        <div style="font-size:12px;color:#3a3a42;text-align:center;padding:8px">Notes are generated from your AI Tutor conversations</div>
+        <div style="font-size:12px;color:var(--subtle);text-align:center;padding:8px">Notes are generated from your AI Tutor conversations</div>
+      </div>
+    </div>
+
+    <!-- TIMER PANEL -->
+    <div class="panel" id="panel-timer">
+      <div class="timer-panel">
+        <div class="timer-display" id="timerDisplay">25:00</div>
+        <div class="timer-presets">
+          <button class="timer-preset active" onclick="setTimer(25,this)">Pomodoro</button>
+          <button class="timer-preset" onclick="setTimer(5,this)">Short Break</button>
+          <button class="timer-preset" onclick="setTimer(15,this)">Long Break</button>
+        </div>
+        <div class="timer-controls">
+          <button class="timer-btn" id="timerStartBtn" onclick="toggleTimer()">Start</button>
+          <button class="timer-btn" onclick="resetTimer()">Reset</button>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:20px">Session: <span id="sessionCount">0</span> | Total: <span id="totalTime">0h</span></div>
+      </div>
+    </div>
+
+    <!-- SEARCH PANEL -->
+    <div class="panel" id="panel-search">
+      <div class="search-panel">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search chat history..." oninput="doSearch(this.value)" />
+        <div class="search-results" id="searchResults"></div>
+      </div>
+    </div>
+
+    <!-- BOOKMARKS PANEL -->
+    <div class="panel" id="panel-bookmarks">
+      <div class="bookmarks-panel" id="bookmarksList"></div>
+    </div>
+
+    <!-- STATS PANEL -->
+    <div class="panel" id="panel-stats">
+      <div class="stats-panel">
+        <div style="font-size:14px;font-weight:500;color:var(--text)">Your Study Stats</div>
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-value" id="statStreak">0</div>
+            <div class="stats-label">Day Streak</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-value" id="statStudyTime">0h</div>
+            <div class="stats-label">Study Time</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-value" id="statCards">0</div>
+            <div class="stats-label">Cards Reviewed</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-value" id="statQuizzes">0</div>
+            <div class="stats-label">Quizzes Taken</div>
+          </div>
+        </div>
+        <div class="stats-row">
+          <div class="stats-card">
+            <div class="stats-value" id="statAccuracy">0%</div>
+            <div class="stats-label">Quiz Accuracy</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-value" id="statBookmarks">0</div>
+            <div class="stats-label">Bookmarks</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS PANEL -->
+    <div class="panel" id="panel-settings">
+      <div class="settings-panel">
+        <div class="settings-section">
+          <div class="settings-title">Data Management</div>
+          <div class="settings-row">
+            <span class="settings-label">Export all data</span>
+            <button class="settings-btn" onclick="exportData()">Export</button>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Import data</span>
+            <button class="settings-btn" onclick="document.getElementById('importFile').click()">Import</button>
+            <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(this)" />
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Export flashcards CSV</span>
+            <button class="settings-btn" onclick="exportFlashcardsCSV()">CSV</button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-title">Voice</div>
+          <div class="settings-row">
+            <span class="settings-label">Voice Input</span>
+            <button class="settings-btn" id="voiceInputBtn" onclick="toggleVoiceInput()">Enable</button>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Text-to-Speech</span>
+            <button class="settings-btn" id="ttsBtn" onclick="toggleTTS()">Enable</button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-title">Keyboard Shortcuts</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.8">
+            <div>Ctrl+Enter - Send message</div>
+            <div>Ctrl+1-7 - Switch panels</div>
+            <div>Ctrl+F - Focus search</div>
+            <div>Ctrl+M - Toggle mute TTS</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -448,6 +632,32 @@ function updateModelSelect(provider) {
 let currentMode = 'explain';
 let chatHistory = [];
 let score = 0, totalQ = 0;
+let flashcards = [], quizHistory = [], bookmarks = [];
+let pomodoroTimer = null, pomodoroTime = 25*60, pomodoroState = 'stopped';
+let stats = { studyTime: 0, cardsReviewed: 0, quizzesTaken: 0, streak: 0, lastStudy: null };
+
+// Storage
+const STORAGE_KEY = 'studybuddy_data';
+function saveData() {
+  const data = { chatHistory, flashcards, quizHistory, bookmarks, stats, flashcards: window.fcData || [] };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+function loadData() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (data) {
+      chatHistory = data.chatHistory || [];
+      flashcards = data.flashcards || [];
+      quizHistory = data.quizHistory || [];
+      bookmarks = data.bookmarks || [];
+      stats = data.stats || stats;
+      if (data.flashcards?.length) window.fcData = data.flashcards;
+    }
+  } catch(e) {}
+  const theme = localStorage.getItem('studybuddy_theme');
+  if (theme) { document.documentElement.setAttribute('data-theme', theme); document.getElementById('themeLabel').textContent = theme === 'light' ? 'Light' : 'Dark'; }
+}
+loadData();
 
 const SYSTEM = {
   explain: "You are StudyBuddy — a brilliant, concise AI tutor. Give thorough explanations with examples. Use markdown formatting. Keep responses focused and educational.",
@@ -476,9 +686,11 @@ function toggleTheme(){
   if(html.getAttribute('data-theme')==='light'){
     html.setAttribute('data-theme','dark');
     label.textContent='Dark';
+    localStorage.setItem('studybuddy_theme','dark');
   }else{
     html.setAttribute('data-theme','light');
     label.textContent='Light';
+    localStorage.setItem('studybuddy_theme','light');
   }
 }
 
@@ -499,10 +711,12 @@ function switchPanel(name, el){
   el.classList.add('active');
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+name).classList.add('active');
-  const titles={chat:'AI Tutor',flashcards:'Flashcards',quiz:'Quiz Me',notes:'Notes'};
-  document.getElementById('topbarTitle').textContent=titles[name];
+  const titles={chat:'AI Tutor',flashcards:'Flashcards',quiz:'Quiz Me',notes:'Notes',timer:'Pomodoro',search:'Search',bookmarks:'Bookmarks',stats:'Statistics',settings:'Settings'};
+  document.getElementById('topbarTitle').textContent=titles[name]||'StudyBuddy';
   const tm=document.getElementById('topbarMode');
   tm.style.display=name==='chat'?'flex':'none';
+  if(name==='stats') updateStats();
+  if(name==='bookmarks') renderBookmarks();
 }
 
 function setMode(m,btn){
@@ -529,11 +743,13 @@ function addMessage(role, content, isHTML=false){
   const div=document.createElement('div');
   div.className='msg '+role;
   const label=role==='user'?'You':'Buddy';
-  if(isHTML){
-    div.innerHTML=`<div class="msg-avatar">${role==='user'?'H':'T'}</div><div class="msg-body"><div class="msg-label">${label}</div><div class="msg-bubble">${content}</div></div>`;
-  } else {
-    div.innerHTML=`<div class="msg-avatar">${role==='user'?'H':'T'}</div><div class="msg-body"><div class="msg-label">${label}</div><div class="msg-bubble">${content}</div></div>`;
-  }
+  const avatar = role==='user'?'H':'B';
+  const actions = `<div class="msg-actions">
+    <button class="msg-action-btn" onclick="copyToClipboard(\`${content.replace(/`/g,'\\`').replace(/"/g,'&quot;')}\`)">Copy</button>
+    <button class="msg-action-btn" onclick="addBookmark(\`${content.replace(/`/g,'\\`').replace(/"/g,'&quot;')}\`,${role==='user'})">Save</button>
+    ${role==='ai'?'<button class="msg-action-btn" onclick="speak(\`'+content.replace(/`/g,'\\`').replace(/"/g,'&quot;')+'\`)">Speak</button>':''}
+  </div>`;
+  div.innerHTML=`<div class="msg-avatar">${avatar}</div><div class="msg-body"><div class="msg-label">${label}</div><div class="msg-bubble">${content}</div>${actions}</div>`;
   msgs.appendChild(div);
   msgs.scrollTop=msgs.scrollHeight;
   return div;
@@ -702,6 +918,10 @@ async function generateFlashcards(){
     );
     loading.classList.add('hidden');
     const cards=parseModelJson(raw,'[]');
+    flashcards = [...cards, ...flashcards];
+    window.fcData = flashcards;
+    saveData();
+    stats.cardsReviewed += cards.length;
     cards.forEach(c=>{
       const card=document.createElement('div');
       card.className='fc-card';card.onclick=()=>flipCard(card);
@@ -764,5 +984,184 @@ function checkAnswer(el,correct,explanation,optsContainer){
     const ex=document.getElementById('qzExplain');
     ex.textContent=explanation;ex.style.display='block';
   }
+  quizHistory.push({score,total:totalQ,topic:document.getElementById('qzTopic').value,date:new Date().toISOString()});
+  stats.quizzesTaken++;
+  stats.cardsReviewed += totalQ;
+  saveData();
 }
+
+// Timer functions
+function setTimer(min,btn) {
+  pomodoroTime = min * 60;
+  document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateTimerDisplay();
+  if (pomodoroState === 'running') { stopTimer(); }
+}
+function updateTimerDisplay() {
+  const m = Math.floor(pomodoroTime / 60).toString().padStart(2,'0');
+  const s = (pomodoroTime % 60).toString().padStart(2,'0');
+  document.getElementById('timerDisplay').textContent = m + ':' + s;
+}
+function toggleTimer() {
+  if (pomodoroState === 'running') {
+    stopTimer();
+  } else {
+    pomodoroState = 'running';
+    document.getElementById('timerStartBtn').textContent = 'Pause';
+    pomodoroTimer = setInterval(() => {
+      pomodoroTime--;
+      updateTimerDisplay();
+      if (pomodoroTime <= 0) {
+        stopTimer();
+        stats.studyTime += 25;
+        saveData();
+        alert('Time is up!');
+      }
+    }, 1000);
+  }
+}
+function stopTimer() {
+  pomodoroState = 'stopped';
+  clearInterval(pomodoroTimer);
+  document.getElementById('timerStartBtn').textContent = 'Start';
+}
+function resetTimer() {
+  stopTimer();
+  pomodoroTime = 25 * 60;
+  updateTimerDisplay();
+}
+
+// Search functions
+function doSearch(query) {
+  const results = document.getElementById('searchResults');
+  if (!query.trim()) { results.innerHTML = ''; return; }
+  const q = query.toLowerCase();
+  const matches = chatHistory.filter(m => m.content.toLowerCase().includes(q));
+  results.innerHTML = matches.slice(0,10).map(m => `
+    <div class="search-result" onclick="scrollToMessage('${m.content.substring(0,50)}')">
+      <div class="search-result-q">${m.role === 'user' ? 'You: ' : 'Buddy: '}${m.content.substring(0,60)}...</div>
+    </div>
+  `).join('') || '<div style="color:var(--muted);text-align:center;padding:20px">No results</div>';
+}
+
+// Bookmark functions
+function addBookmark(text, isUser) {
+  bookmarks.unshift({text, isUser, date: new Date().toISOString()});
+  saveData();
+}
+function renderBookmarks() {
+  document.getElementById('bookmarksList').innerHTML = bookmarks.map((b,i) => `
+    <div class="bookmark-card">
+      <div class="bookmark-header">
+        <span class="bookmark-title">${b.isUser ? 'You' : 'Buddy'}</span>
+        <div class="bookmark-actions">
+          <button class="bookmark-action" onclick="copyToClipboard('${b.text.replace(/'/g,"\\'")}')">Copy</button>
+          <button class="bookmark-action" onclick="deleteBookmark(${i})">Delete</button>
+        </div>
+      </div>
+      <div class="bookmark-text">${b.text.substring(0,200)}</div>
+      <div class="bookmark-date">${new Date(b.date).toLocaleDateString()}</div>
+    </div>
+  `).join('') || '<div style="color:var(--muted);text-align:center;padding:40px">No bookmarks yet</div>';
+}
+function deleteBookmark(i) {
+  bookmarks.splice(i,1);
+  saveData();
+  renderBookmarks();
+}
+
+// Stats
+function updateStats() {
+  document.getElementById('statStreak').textContent = stats.streak;
+  document.getElementById('statStudyTime').textContent = Math.round(stats.studyTime/60) + 'h';
+  document.getElementById('statCards').textContent = stats.cardsReviewed;
+  document.getElementById('statQuizzes').textContent = stats.quizzesTaken;
+  document.getElementById('statAccuracy').textContent = quizHistory.length ? Math.round(quizHistory.reduce((a,q)=>a+q.score/q.total,0)/quizHistory.length*100) + '%' : '0%';
+  document.getElementById('statBookmarks').textContent = bookmarks.length;
+}
+
+// Export/Import
+function exportData() {
+  const data = { chatHistory, flashcards, quizHistory, bookmarks, stats };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'studybuddy_backup.json'; a.click();
+}
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      chatHistory = data.chatHistory || [];
+      flashcards = data.flashcards || [];
+      quizHistory = data.quizHistory || [];
+      bookmarks = data.bookmarks || [];
+      stats = data.stats || stats;
+      saveData();
+      alert('Data imported successfully!');
+    } catch(err) { alert('Invalid file'); }
+  };
+  reader.readAsText(file);
+}
+function exportFlashcardsCSV() {
+  if (!flashcards.length) { alert('No flashcards to export'); return; }
+  const csv = 'Question,Answer\n' + flashcards.map(f => `"${(f.q||f.question).replace(/"/g,'""')}","${(f.a||f.answer).replace(/"/g,'""')}"`).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'flashcards.csv'; a.click();
+}
+
+// Copy to clipboard
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text);
+}
+
+// Voice Input & TTS
+let voiceRecognition = null;
+let ttsEnabled = false;
+function toggleVoiceInput() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('Voice input not supported in this browser');
+    return;
+  }
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (voiceRecognition) {
+    voiceRecognition.stop();
+    voiceRecognition = null;
+    document.getElementById('voiceInputBtn').textContent = 'Enable';
+  } else {
+    voiceRecognition = new SpeechRecognition();
+    voiceRecognition.onresult = (e) => {
+      document.getElementById('chatInput').value += e.results[0][0].transcript;
+    };
+    voiceRecognition.start();
+    document.getElementById('voiceInputBtn').textContent = 'Stop';
+  }
+}
+function toggleTTS() {
+  ttsEnabled = !ttsEnabled;
+  document.getElementById('ttsBtn').textContent = ttsEnabled ? 'Disable' : 'Enable';
+}
+function speak(text) {
+  if (!ttsEnabled) return;
+  const utterance = new SpeechSynthesisUtterance(text);
+  speechSynthesis.speak(utterance);
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') { sendMessage(); e.preventDefault(); }
+  if (e.ctrlKey && e.key >= '1' && e.key <= '7') {
+    const items = document.querySelectorAll('.sb-item');
+    const idx = parseInt(e.key) - 1;
+    if (items[idx]) switchPanel(['chat','flashcards','quiz','notes','timer','search','bookmarks'][idx], items[idx]);
+    e.preventDefault();
+  }
+  if (e.ctrlKey && e.key === 'f') { switchPanel('search',document.querySelectorAll('.sb-item')[5]); e.preventDefault(); }
+  if (e.ctrlKey && e.key === 'm') { toggleTTS(); e.preventDefault(); }
+});
+
+// Save flashcards
+window.fcData = flashcards;
 </script>
