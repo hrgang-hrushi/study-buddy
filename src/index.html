@@ -4,11 +4,11 @@
 
   *{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --bg:#0a0a0b;--surface:#111113;--surface2:#18181c;--surface3:#222228;
-    --border:#ffffff0f;--border2:#ffffff18;--border3:#ffffff28;
-    --text:#f0f0f2;--muted:#6b6b75;--subtle:#3a3a42;
-    --accent:#22c55e;--accent2:#4ade80;--accent-glow:#22c55e20;
-    --green:#22c55e;--amber:#f59e0b;--red:#ef4444;
+    --bg:#000000;--surface:#0a0a0a;--surface2:#111111;--surface3:#1a1a1a;
+    --border:#1f1f1f;--border2:#2a2a2a;--border3:#3a3a3a;
+    --text:#00ff41;--muted:#00cc33;--subtle:#008f11;
+    --accent:#00ff41;--accent2:#33ff66;--accent-glow:#00ff4130;
+    --green:#00ff41;--amber:#ffaa00;--red:#ff0040;
     --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
     --r:10px;--r2:14px;--r3:18px;
   }
@@ -20,7 +20,7 @@
 
   /* ─── INIT SCREEN ─── */
   #init{flex-direction:column;align-items:center;justify-content:center;min-height:600px;gap:0;background:var(--bg);position:relative;overflow:hidden}
-  #init::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,#22c55e15 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-60%);pointer-events:none}
+  #init::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,#00ff4115 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-60%);pointer-events:none}
   .init-logo{font-size:13px;font-weight:500;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:48px}
   .init-heading{font-size:38px;font-weight:300;color:var(--text);line-height:1.15;text-align:center;margin-bottom:8px;letter-spacing:-.02em}
   .init-heading span{color:var(--accent2);font-style:italic}
@@ -134,7 +134,7 @@
   .qz-options{display:flex;flex-direction:column;gap:8px}
   .qz-opt{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 16px;font-size:13px;cursor:pointer;color:var(--text);transition:border-color .15s,background .15s;text-align:left;font-family:var(--font)}
   .qz-opt:hover{border-color:var(--border3);background:var(--surface3)}
-  .qz-opt.correct{border-color:var(--green);background:#22c55e12;color:var(--green)}
+  .qz-opt.correct{border-color:var(--green);background:#00ff4112;color:var(--green)}
   .qz-opt.wrong{border-color:var(--red);background:#ef444412;color:var(--red)}
   .qz-gen-bar{display:flex;gap:8px}
   .qz-gen-bar input{flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--r);padding:10px 14px;font-size:13px;color:var(--text);font-family:var(--font);outline:none}
@@ -162,22 +162,22 @@
 <!-- INIT SCREEN -->
 <div class="screen active" id="init">
   <div style="font-size:12px;color:#6b6b75;letter-spacing:.15em;text-transform:uppercase;margin-bottom:52px;display:flex;align-items:center;gap:8px">
-    <div style="width:20px;height:20px;border-radius:5px;background:#22c55e;display:flex;align-items:center;justify-content:center">
+    <div style="width:20px;height:20px;border-radius:5px;background:#00ff41;display:flex;align-items:center;justify-content:center">
       <svg viewBox="0 0 12 12" fill="white" width="8" height="8"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
     </div>
     StudyBuddy
   </div>
-  <div style="font-size:36px;font-weight:300;color:#f0f0f2;line-height:1.15;text-align:center;margin-bottom:10px;letter-spacing:-.02em">
-    Your <span style="color:#4ade80;font-style:italic">AI-powered</span><br>study engine
+  <div style="font-size:36px;font-weight:300;color:#00ff41;line-height:1.15;text-align:center;margin-bottom:10px;letter-spacing:-.02em">
+    Your <span style="color:#33ff66;font-style:italic">AI-powered</span><br>study engine
   </div>
   <div style="font-size:15px;color:#6b6b75;margin-bottom:40px;text-align:center;font-weight:300">
     Chat · Flashcards · Quizzes — all in one
   </div>
   <div style="position:relative;width:380px">
-    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="width:100%;background:#111113;border:0.5px solid #ffffff18;border-radius:14px;padding:14px 48px 14px 18px;font-size:14px;color:#f0f0f2;font-family:'DM Mono',monospace;outline:none;transition:border-color .15s" />
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="width:100%;background:#0a0a0a;border:0.5px solid #ffffff18;border-radius:14px;padding:14px 48px 14px 18px;font-size:14px;color:#00ff41;font-family:'DM Mono',monospace;outline:none;transition:border-color .15s" />
     <button onclick="toggleKey()" id="eyeBtn" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:#6b6b75;cursor:pointer;font-size:14px;padding:4px">👁</button>
   </div>
-  <button onclick="initApp()" style="width:380px;margin-top:12px;background:#22c55e;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;letter-spacing:.01em" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+  <button onclick="initApp()" style="width:380px;margin-top:12px;background:#00ff41;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;letter-spacing:.01em" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
     Launch StudyBuddy →
   </button>
   <div id="initError" style="font-size:12px;color:#ef4444;margin-top:10px;display:none">Please enter your Gemini API key and model.</div>
@@ -229,7 +229,7 @@
   <div class="main">
     <div class="topbar">
       <span class="topbar-title" id="topbarTitle">AI Tutor</span>
-      <span style="font-size:11px;color:#4ade80;background:#111113;border:0.5px solid #ffffff18;border-radius:999px;padding:4px 10px;font-family:'DM Mono',monospace" id="modelChip">Claude Opus</span>
+      <span style="font-size:11px;color:#33ff66;background:#0a0a0a;border:0.5px solid #ffffff18;border-radius:999px;padding:4px 10px;font-family:'DM Mono',monospace" id="modelChip">Claude Opus</span>
       <div class="topbar-mode" id="topbarMode">
         <button class="tm-btn active" onclick="setMode('explain',this)">Explain</button>
         <button class="tm-btn" onclick="setMode('socratic',this)">Socratic</button>
@@ -312,7 +312,7 @@
           <div style="font-size:12px;color:#6b6b75;text-align:center;margin-top:8px">Building quiz...</div>
         </div>
         <div class="qz-header">
-          <span style="font-size:13px;font-weight:500;color:#f0f0f2">Current Question</span>
+          <span style="font-size:13px;font-weight:500;color:#00ff41">Current Question</span>
           <span class="qz-score">Score: <span id="scoreDisplay">0</span>/0</span>
         </div>
         <div class="qz-card" id="qzCard">
@@ -324,7 +324,7 @@
             <button class="qz-opt" onclick="checkAnswer(this,false)">Core Processing Utility</button>
           </div>
         </div>
-        <div id="qzExplain" style="display:none;background:#111113;border:0.5px solid #ffffff0f;border-radius:14px;padding:16px;font-size:13px;color:#4ade80;line-height:1.7"></div>
+        <div id="qzExplain" style="display:none;background:#0a0a0a;border:0.5px solid #ffffff0f;border-radius:14px;padding:16px;font-size:13px;color:#33ff66;line-height:1.7"></div>
       </div>
     </div>
 
@@ -332,7 +332,7 @@
     <div class="panel" id="panel-notes">
       <div class="notes-panel">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:14px;font-weight:500;color:#f0f0f2">Study Notes</span>
+          <span style="font-size:14px;font-weight:500;color:#00ff41">Study Notes</span>
           <span style="font-size:12px;color:#6b6b75">Auto-saved from chats</span>
         </div>
         <div class="note-card">
