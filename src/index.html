@@ -1,0 +1,622 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0a0a0b;--surface:#111113;--surface2:#18181c;--surface3:#222228;
+    --border:#ffffff0f;--border2:#ffffff18;--border3:#ffffff28;
+    --text:#f0f0f2;--muted:#6b6b75;--subtle:#3a3a42;
+    --accent:#22c55e;--accent2:#4ade80;--accent-glow:#22c55e20;
+    --green:#22c55e;--amber:#f59e0b;--red:#ef4444;
+    --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+    --r:10px;--r2:14px;--r3:18px;
+  }
+  body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:600px;overflow:hidden}
+
+  /* ─── SCREENS ─── */
+  .screen{display:none;width:100%;height:100%;position:absolute;top:0;left:0}
+  .screen.active{display:flex}
+
+  /* ─── INIT SCREEN ─── */
+  #init{flex-direction:column;align-items:center;justify-content:center;min-height:600px;gap:0;background:var(--bg);position:relative;overflow:hidden}
+  #init::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,#22c55e15 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-60%);pointer-events:none}
+  .init-logo{font-size:13px;font-weight:500;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:48px}
+  .init-heading{font-size:38px;font-weight:300;color:var(--text);line-height:1.15;text-align:center;margin-bottom:8px;letter-spacing:-.02em}
+  .init-heading span{color:var(--accent2);font-style:italic}
+  .init-sub{font-size:15px;color:var(--muted);margin-bottom:40px;text-align:center;font-weight:300}
+  .api-input-wrap{position:relative;width:380px}
+  .api-input-wrap input{width:100%;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--r2);padding:14px 48px 14px 18px;font-size:14px;color:var(--text);font-family:var(--mono);outline:none;transition:border-color .15s}
+  .api-input-wrap input:focus{border-color:var(--accent)}
+  .api-input-wrap input::placeholder{color:var(--subtle);font-family:var(--mono)}
+  .api-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;padding:4px}
+  .init-btn{width:380px;margin-top:12px;background:var(--accent);border:none;border-radius:var(--r2);padding:14px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;font-family:var(--font);transition:opacity .15s,transform .1s;letter-spacing:.01em}
+  .init-btn:hover{opacity:.9}
+  .init-btn:active{transform:scale(.99)}
+  .init-note{font-size:12px;color:var(--subtle);margin-top:14px;text-align:center}
+  .init-note a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--subtle)}
+
+  /* ─── APP SHELL ─── */
+  #app{flex-direction:row;min-height:600px;height:600px}
+
+  /* ─── SIDEBAR ─── */
+  .sidebar{width:220px;min-width:220px;background:var(--surface);border-right:0.5px solid var(--border);display:flex;flex-direction:column;padding:16px 0;height:600px;overflow:hidden}
+  .sb-brand{padding:0 16px 16px;display:flex;align-items:center;gap:8px;border-bottom:0.5px solid var(--border)}
+  .sb-brand-dot{width:22px;height:22px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center}
+  .sb-brand-dot svg{width:12px;height:12px}
+  .sb-brand-name{font-size:13px;font-weight:500;color:var(--text)}
+  .sb-section{padding:14px 10px 4px;font-size:11px;color:var(--subtle);text-transform:uppercase;letter-spacing:.1em}
+  .sb-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r);cursor:pointer;font-size:13px;color:var(--muted);transition:background .1s,color .1s;margin:0 6px}
+  .sb-item:hover{background:var(--surface2);color:var(--text)}
+  .sb-item.active{background:var(--surface3);color:var(--text)}
+  .sb-item svg{width:15px;height:15px;flex-shrink:0}
+  .sb-item .badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;padding:2px 6px;border-radius:20px;font-weight:500}
+  .sb-spacer{flex:1}
+  .sb-bottom{padding:10px 16px;border-top:0.5px solid var(--border)}
+  .sb-key-pill{background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--r);padding:8px 10px;display:flex;align-items:center;gap:8px;cursor:pointer}
+  .sb-key-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+  .sb-key-label{font-size:11px;color:var(--muted);font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+
+  /* ─── MAIN ─── */
+  .main{flex:1;display:flex;flex-direction:column;height:600px;overflow:hidden;background:var(--bg)}
+
+  /* ─── TOPBAR ─── */
+  .topbar{padding:14px 20px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0}
+  .topbar-title{font-size:14px;font-weight:500;color:var(--text);flex:1}
+  .topbar-mode{display:flex;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:3px;gap:2px}
+  .tm-btn{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--muted);font-family:var(--font);transition:all .15s}
+  .tm-btn.active{background:var(--surface3);color:var(--text)}
+
+  /* ─── PANELS ─── */
+  .panel{display:none;flex:1;flex-direction:column;overflow:hidden;height:100%}
+  .panel.active{display:flex}
+
+  /* ─── CHAT PANEL ─── */
+  .chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;scrollbar-width:thin;scrollbar-color:var(--subtle) transparent}
+  .msg{display:flex;gap:12px;max-width:100%;animation:fadein .2s ease}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .msg-avatar{width:28px;height:28px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;margin-top:2px}
+  .msg.user .msg-avatar{background:var(--surface3);color:var(--muted);margin-left:auto;order:2}
+  .msg.ai .msg-avatar{background:var(--accent-glow);border:0.5px solid var(--accent);color:var(--accent2)}
+  .msg-body{max-width:75%}
+  .msg.user .msg-body{margin-left:auto;align-items:flex-end;display:flex;flex-direction:column}
+  .msg-bubble{padding:11px 15px;border-radius:var(--r2);font-size:14px;line-height:1.65;font-weight:300}
+  .msg.user .msg-bubble{background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+  .msg.ai .msg-bubble{background:var(--surface);border:0.5px solid var(--border);color:var(--text);border-bottom-left-radius:4px}
+  .msg-label{font-size:11px;color:var(--muted);margin-bottom:4px;padding:0 2px}
+  .msg.user .msg-label{text-align:right}
+  .typing-indicator{display:flex;gap:4px;padding:4px 2px;align-items:center}
+  .typing-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:bounce .8s infinite}
+  .typing-dot:nth-child(2){animation-delay:.15s}
+  .typing-dot:nth-child(3){animation-delay:.3s}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+  /* ─── CHAT INPUT ─── */
+  .chat-input-area{padding:14px 20px;border-top:0.5px solid var(--border);flex-shrink:0}
+  .input-row{display:flex;gap:8px;align-items:flex-end}
+  .chat-textarea{flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--r2);padding:12px 14px;font-size:14px;color:var(--text);font-family:var(--font);resize:none;outline:none;line-height:1.6;min-height:46px;max-height:120px;transition:border-color .15s;font-weight:300}
+  .chat-textarea:focus{border-color:var(--accent)}
+  .chat-textarea::placeholder{color:var(--subtle)}
+  .send-btn{width:42px;height:42px;background:var(--accent);border:none;border-radius:var(--r);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .15s;flex-shrink:0}
+  .send-btn:hover{opacity:.85}
+  .send-btn svg{width:16px;height:16px}
+  .chat-modes{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+  .mode-pill{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:0.5px solid var(--border2);background:none;color:var(--muted);font-family:var(--font);transition:all .15s}
+  .mode-pill:hover,.mode-pill.on{background:var(--surface2);color:var(--text);border-color:var(--border3)}
+  .mode-pill.on{border-color:var(--accent);color:var(--accent2)}
+
+  /* ─── FLASHCARD PANEL ─── */
+  .fc-panel{padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+  .fc-gen-bar{display:flex;gap:8px}
+  .fc-gen-bar input{flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--r);padding:10px 14px;font-size:13px;color:var(--text);font-family:var(--font);outline:none}
+  .fc-gen-bar input:focus{border-color:var(--accent)}
+  .fc-gen-bar input::placeholder{color:var(--subtle)}
+  .fc-gen-btn{background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--r);padding:10px 16px;font-size:13px;color:var(--text);cursor:pointer;font-family:var(--font);white-space:nowrap;transition:background .15s}
+  .fc-gen-btn:hover{background:var(--surface3)}
+  .fc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .fc-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r2);padding:16px;cursor:pointer;transition:border-color .2s,transform .15s;min-height:100px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+  .fc-card:hover{border-color:var(--border3);transform:translateY(-1px)}
+  .fc-card.flipped{border-color:var(--accent)}
+  .fc-front{font-size:13px;color:var(--text);line-height:1.6;font-weight:400}
+  .fc-back{font-size:12px;color:var(--accent2);line-height:1.6;display:none;margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border)}
+  .fc-card.flipped .fc-back{display:block}
+  .fc-hint{font-size:11px;color:var(--subtle);margin-top:8px}
+  .fc-status{display:flex;gap:6px;margin-top:8px}
+  .fc-dot{width:6px;height:6px;border-radius:50%}
+
+  /* ─── QUIZ PANEL ─── */
+  .qz-panel{padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+  .qz-header{display:flex;align-items:center;justify-content:space-between}
+  .qz-score{font-size:13px;color:var(--muted)}
+  .qz-score span{color:var(--green);font-weight:500}
+  .qz-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r2);padding:20px}
+  .qz-q{font-size:15px;font-weight:400;line-height:1.65;margin-bottom:20px;color:var(--text)}
+  .qz-options{display:flex;flex-direction:column;gap:8px}
+  .qz-opt{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 16px;font-size:13px;cursor:pointer;color:var(--text);transition:border-color .15s,background .15s;text-align:left;font-family:var(--font)}
+  .qz-opt:hover{border-color:var(--border3);background:var(--surface3)}
+  .qz-opt.correct{border-color:var(--green);background:#22c55e12;color:var(--green)}
+  .qz-opt.wrong{border-color:var(--red);background:#ef444412;color:var(--red)}
+  .qz-gen-bar{display:flex;gap:8px}
+  .qz-gen-bar input{flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--r);padding:10px 14px;font-size:13px;color:var(--text);font-family:var(--font);outline:none}
+  .qz-gen-bar input:focus{border-color:var(--accent)}
+  .qz-gen-bar input::placeholder{color:var(--subtle)}
+
+  /* ─── NOTES PANEL ─── */
+  .notes-panel{padding:20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+  .note-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r2);padding:16px}
+  .note-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .note-title{font-size:13px;font-weight:500;color:var(--text)}
+  .note-date{font-size:11px;color:var(--muted)}
+  .note-body{font-size:13px;color:var(--muted);line-height:1.7;font-weight:300}
+  .note-tags{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+  .note-tag{font-size:11px;padding:3px 8px;border-radius:20px;background:var(--surface2);color:var(--muted);border:0.5px solid var(--border)}
+
+  /* ─── LOADING STATE ─── */
+  .loading-bar{height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:1px;margin:0 -15px}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .hidden{display:none!important}
+</style>
+
+<div style="position:relative;width:100%;height:600px;overflow:hidden;background:#0a0a0b;font-family:'DM Sans',sans-serif">
+
+<!-- INIT SCREEN -->
+<div class="screen active" id="init">
+  <div style="font-size:12px;color:#6b6b75;letter-spacing:.15em;text-transform:uppercase;margin-bottom:52px;display:flex;align-items:center;gap:8px">
+    <div style="width:20px;height:20px;border-radius:5px;background:#22c55e;display:flex;align-items:center;justify-content:center">
+      <svg viewBox="0 0 12 12" fill="white" width="8" height="8"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+    </div>
+    StudyBuddy
+  </div>
+  <div style="font-size:36px;font-weight:300;color:#f0f0f2;line-height:1.15;text-align:center;margin-bottom:10px;letter-spacing:-.02em">
+    Your <span style="color:#4ade80;font-style:italic">AI-powered</span><br>study engine
+  </div>
+  <div style="font-size:15px;color:#6b6b75;margin-bottom:40px;text-align:center;font-weight:300">
+    Chat · Flashcards · Quizzes — all in one
+  </div>
+  <div style="position:relative;width:380px">
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="width:100%;background:#111113;border:0.5px solid #ffffff18;border-radius:14px;padding:14px 48px 14px 18px;font-size:14px;color:#f0f0f2;font-family:'DM Mono',monospace;outline:none;transition:border-color .15s" />
+    <button onclick="toggleKey()" id="eyeBtn" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:#6b6b75;cursor:pointer;font-size:14px;padding:4px">👁</button>
+  </div>
+  <button onclick="initApp()" style="width:380px;margin-top:12px;background:#22c55e;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;letter-spacing:.01em" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+    Launch StudyBuddy →
+  </button>
+  <div id="initError" style="font-size:12px;color:#ef4444;margin-top:10px;display:none">Please enter your Gemini API key and model.</div>
+  <div style="font-size:12px;color:#3a3a42;margin-top:14px;text-align:center">
+    Your key is stored locally in-session only
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div class="screen" id="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-brand-dot">
+        <svg viewBox="0 0 12 12" fill="white"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+      </div>
+      <span class="sb-brand-name">StudyBuddy</span>
+    </div>
+
+    <div class="sb-section">Workspace</div>
+    <div class="sb-item active" onclick="switchPanel('chat',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 3h12v8H9l-3 2v-2H2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      AI Tutor
+    </div>
+    <div class="sb-item" onclick="switchPanel('flashcards',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2" y="4" width="12" height="8" rx="2"/><path d="M5 2v2M11 2v2" stroke-linecap="round"/></svg>
+      Flashcards
+    </div>
+    <div class="sb-item" onclick="switchPanel('quiz',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="6"/><path d="M8 5v4M8 11v.5" stroke-linecap="round"/></svg>
+      Quiz Me
+    </div>
+    <div class="sb-item" onclick="switchPanel('notes',this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 3h10v10H3z" rx="1"/><path d="M5 6h6M5 9h4" stroke-linecap="round"/></svg>
+      Notes
+    </div>
+
+    <div class="sb-spacer"></div>
+    <div class="sb-bottom">
+      <div class="sb-key-pill">
+        <div class="sb-key-dot"></div>
+        <span class="sb-key-label" id="keyLabel">Claude...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <div class="topbar">
+      <span class="topbar-title" id="topbarTitle">AI Tutor</span>
+      <span style="font-size:11px;color:#4ade80;background:#111113;border:0.5px solid #ffffff18;border-radius:999px;padding:4px 10px;font-family:'DM Mono',monospace" id="modelChip">Claude Opus</span>
+      <div class="topbar-mode" id="topbarMode">
+        <button class="tm-btn active" onclick="setMode('explain',this)">Explain</button>
+        <button class="tm-btn" onclick="setMode('socratic',this)">Socratic</button>
+        <button class="tm-btn" onclick="setMode('concise',this)">Concise</button>
+      </div>
+    </div>
+
+    <!-- CHAT PANEL -->
+    <div class="panel active" id="panel-chat" style="display:flex;flex-direction:column">
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg ai">
+          <div class="msg-avatar">B</div>
+          <div class="msg-body">
+            <div class="msg-label">Buddy</div>
+            <div class="msg-bubble">Hey Hrushi 👋 I'm your personal AI tutor. Ask me <strong>anything</strong> — concepts, problems, summaries, derivations. What are we studying today?</div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <div class="chat-modes">
+          <button class="mode-pill on" onclick="togglePill(this,'explain-deep')">🔍 Deep explain</button>
+          <button class="mode-pill" onclick="togglePill(this,'examples')">💡 Examples</button>
+          <button class="mode-pill" onclick="togglePill(this,'eli5')">🧒 ELI5</button>
+          <button class="mode-pill" onclick="togglePill(this,'code')">💻 Code mode</button>
+        </div>
+        <div class="input-row">
+          <textarea class="chat-textarea" id="chatInput" placeholder="Ask anything... (Enter to send)" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="send-btn" onclick="sendMessage()">
+            <svg viewBox="0 0 16 16" fill="white"><path d="M2 8L14 2L10 14L8 9L2 8Z" stroke="white" stroke-width="1" fill="none" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLASHCARDS PANEL -->
+    <div class="panel" id="panel-flashcards">
+      <div class="fc-panel">
+        <div class="fc-gen-bar">
+          <input type="text" id="fcTopic" placeholder="Topic to generate flashcards (e.g. Photosynthesis)" />
+          <button class="fc-gen-btn" onclick="generateFlashcards()">✦ Generate</button>
+        </div>
+        <div id="fcLoading" class="hidden">
+          <div class="loading-bar"></div>
+          <div style="font-size:12px;color:#6b6b75;text-align:center;margin-top:8px">Generating cards...</div>
+        </div>
+        <div class="fc-grid" id="fcGrid">
+          <div class="fc-card" onclick="flipCard(this)">
+            <div class="fc-front">What is the powerhouse of the cell?</div>
+            <div class="fc-back">The <strong>mitochondria</strong> — produces ATP via cellular respiration.</div>
+            <div class="fc-hint">Tap to reveal</div>
+          </div>
+          <div class="fc-card" onclick="flipCard(this)">
+            <div class="fc-front">Define osmosis</div>
+            <div class="fc-back">Movement of water molecules through a semipermeable membrane from high to low concentration.</div>
+            <div class="fc-hint">Tap to reveal</div>
+          </div>
+          <div class="fc-card" onclick="flipCard(this)">
+            <div class="fc-front">What is Newton's 2nd Law?</div>
+            <div class="fc-back">F = ma — Force equals mass times acceleration.</div>
+            <div class="fc-hint">Tap to reveal</div>
+          </div>
+          <div class="fc-card" onclick="flipCard(this)">
+            <div class="fc-front">What is Big O notation O(n²)?</div>
+            <div class="fc-back">Quadratic time complexity — algorithm's time grows as the square of input size. Common in nested loops.</div>
+            <div class="fc-hint">Tap to reveal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ PANEL -->
+    <div class="panel" id="panel-quiz">
+      <div class="qz-panel">
+        <div class="qz-gen-bar">
+          <input type="text" id="qzTopic" placeholder="Quiz me on... (e.g. World War II)" />
+          <button class="fc-gen-btn" onclick="generateQuiz()">✦ Generate Quiz</button>
+        </div>
+        <div id="qzLoading" class="hidden">
+          <div class="loading-bar"></div>
+          <div style="font-size:12px;color:#6b6b75;text-align:center;margin-top:8px">Building quiz...</div>
+        </div>
+        <div class="qz-header">
+          <span style="font-size:13px;font-weight:500;color:#f0f0f2">Current Question</span>
+          <span class="qz-score">Score: <span id="scoreDisplay">0</span>/0</span>
+        </div>
+        <div class="qz-card" id="qzCard">
+          <div class="qz-q" id="qzQuestion">Generate a quiz above, or try this sample:<br><br>What does CPU stand for?</div>
+          <div class="qz-options" id="qzOptions">
+            <button class="qz-opt" onclick="checkAnswer(this,false)">Central Power Unit</button>
+            <button class="qz-opt" onclick="checkAnswer(this,true)">Central Processing Unit</button>
+            <button class="qz-opt" onclick="checkAnswer(this,false)">Computer Processing Unit</button>
+            <button class="qz-opt" onclick="checkAnswer(this,false)">Core Processing Utility</button>
+          </div>
+        </div>
+        <div id="qzExplain" style="display:none;background:#111113;border:0.5px solid #ffffff0f;border-radius:14px;padding:16px;font-size:13px;color:#4ade80;line-height:1.7"></div>
+      </div>
+    </div>
+
+    <!-- NOTES PANEL -->
+    <div class="panel" id="panel-notes">
+      <div class="notes-panel">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:14px;font-weight:500;color:#f0f0f2">Study Notes</span>
+          <span style="font-size:12px;color:#6b6b75">Auto-saved from chats</span>
+        </div>
+        <div class="note-card">
+          <div class="note-header">
+            <span class="note-title">Photosynthesis Overview</span>
+            <span class="note-date">Today</span>
+          </div>
+          <div class="note-body">Light-dependent reactions occur in the thylakoid, producing ATP and NADPH. Light-independent reactions (Calvin Cycle) occur in the stroma, fixing CO₂ into glucose using ATP and NADPH.</div>
+          <div class="note-tags">
+            <span class="note-tag">Biology</span>
+            <span class="note-tag">AP Bio</span>
+          </div>
+        </div>
+        <div class="note-card">
+          <div class="note-header">
+            <span class="note-title">Big O Complexity Cheatsheet</span>
+            <span class="note-date">Yesterday</span>
+          </div>
+          <div class="note-body">O(1) → Constant. O(log n) → Binary search. O(n) → Linear. O(n log n) → Merge sort. O(n²) → Bubble/Insertion. O(2ⁿ) → Recursive fibonacci.</div>
+          <div class="note-tags">
+            <span class="note-tag">CS</span>
+            <span class="note-tag">Algorithms</span>
+          </div>
+        </div>
+        <div style="font-size:12px;color:#3a3a42;text-align:center;padding:8px">Notes are generated from your AI Tutor conversations</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script>
+let ANTHROPIC_API_KEY = '';
+let currentMode = 'explain';
+let chatHistory = [];
+let score = 0, totalQ = 0;
+
+const SYSTEM = {
+  explain: "You are StudyBuddy — a brilliant, concise AI tutor. Give thorough explanations with examples. Use markdown formatting. Keep responses focused and educational.",
+  socratic: "You are StudyBuddy using the Socratic method. Guide the student to discover answers through questions. Never give the answer directly — ask leading questions.",
+  concise: "You are StudyBuddy. Give the shortest, most direct answer possible. 2-3 sentences max. Bullet points preferred."
+};
+
+function toggleKey(){
+  const i=document.getElementById('apiKeyInput');
+  i.type=i.type==='password'?'text':'password';
+}
+
+function initApp(){
+  const k=document.getElementById('apiKeyInput').value.trim();
+  if(!k){document.getElementById('initError').style.display='block';return;}
+  ANTHROPIC_API_KEY=k;
+  document.getElementById('init').classList.remove('active');
+  document.getElementById('app').classList.add('active');
+  document.getElementById('keyLabel').textContent='Claude '+k.substring(0,10)+'...';
+}
+
+function switchPanel(name, el){
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  const titles={chat:'AI Tutor',flashcards:'Flashcards',quiz:'Quiz Me',notes:'Notes'};
+  document.getElementById('topbarTitle').textContent=titles[name];
+  const tm=document.getElementById('topbarMode');
+  tm.style.display=name==='chat'?'flex':'none';
+}
+
+function setMode(m,btn){
+  currentMode=m;
+  document.querySelectorAll('.tm-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function togglePill(el,mode){
+  el.classList.toggle('on');
+}
+
+function handleKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+}
+
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,120)+'px';
+}
+
+function addMessage(role, content, isHTML=false){
+  const msgs=document.getElementById('chatMessages');
+  const div=document.createElement('div');
+  div.className='msg '+role;
+  const label=role==='user'?'You':'Buddy';
+  if(isHTML){
+    div.innerHTML=`<div class="msg-avatar">${role==='user'?'H':'T'}</div><div class="msg-body"><div class="msg-label">${label}</div><div class="msg-bubble">${content}</div></div>`;
+  } else {
+    div.innerHTML=`<div class="msg-avatar">${role==='user'?'H':'T'}</div><div class="msg-body"><div class="msg-label">${label}</div><div class="msg-bubble">${content}</div></div>`;
+  }
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+  return div;
+}
+
+function addTyping(){
+  const msgs=document.getElementById('chatMessages');
+  const div=document.createElement('div');
+  div.className='msg ai';div.id='typing-indicator';
+  div.innerHTML=`<div class="msg-avatar">B</div><div class="msg-body"><div class="msg-label">Buddy</div><div class="msg-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+
+function normalizeError(err){
+  const msg=(err&&err.message?err.message:'').toLowerCase();
+  if(msg.includes('api key')||msg.includes('unauth')||msg.includes('permission')) return 'Invalid Claude API key. Please verify and retry.';
+  if(msg.includes('quota')||msg.includes('rate')||msg.includes('resource exhausted')) return 'Claude quota limit reached. Please wait or use a different key.';
+  if(msg.includes('not found')||msg.includes('model')) return 'Claude model not found. Update the model name and try again.';
+  if(msg.includes('blocked')) return 'Claude blocked this response due to safety settings. Try rephrasing your request.';
+  return 'Connection error. Check your Claude key and try again.';
+}
+
+function extractClaudeText(data){
+  if(data?.content && data.content.length > 0){
+    const textContent = data.content.find(c => c.type === 'text');
+    if(textContent?.text) return textContent.text.trim();
+  }
+  if(data?.stop_reason){
+    if(data.stop_reason === 'max_tokens') return 'Response truncated due to max tokens limit.';
+    if(data.stop_reason === 'content_filter') throw new Error('Blocked: content filtered');
+  }
+  throw new Error('Empty Claude response');
+}
+
+function parseModelJson(raw, fallback){
+  const clean=(raw||'').replace(/```json|```/gi,'').trim();
+  if(!clean){
+    return JSON.parse(fallback);
+  }
+  try{
+    return JSON.parse(clean);
+  }catch(_){
+    const match=clean.match(/\[[\s\S]*\]|\{[\s\S]*\}/);
+    if(match){
+      return JSON.parse(match[0]);
+    }
+    throw new Error('Invalid JSON from model');
+  }
+}
+
+async function callClaude(systemPrompt, messages, maxOutputTokens=1024){
+  const endpoint='https://api.anthropic.com/v1/messages';
+  const body={
+    model: 'claude-opus-4-5',
+    max_tokens: maxOutputTokens,
+    system: systemPrompt,
+    messages: messages
+  };
+
+  const r=await fetch(endpoint,{
+    method:'POST',
+    headers:{
+      'Content-Type': 'application/json',
+      'x-api-key': ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body:JSON.stringify(body)
+  });
+  const d=await r.json();
+  if(!r.ok){
+    const errMsg=d?.error?.message||('HTTP '+r.status);
+    throw new Error(errMsg);
+  }
+  return extractClaudeText(d);
+}
+
+async function sendMessage(){
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim();
+  if(!text||!ANTHROPIC_API_KEY)return;
+  input.value='';input.style.height='auto';
+  addMessage('user',text);
+  chatHistory.push({role:'user',content:text});
+  addTyping();
+
+  const activePills=[...document.querySelectorAll('.mode-pill.on')].map(p=>p.textContent.trim()).join(', ');
+  const sysPrompt=SYSTEM[currentMode]+(activePills?` Focus on: ${activePills}.`:'');
+
+  try{
+    const reply=await callClaude(sysPrompt, chatHistory, 1024);
+    document.getElementById('typing-indicator')?.remove();
+    chatHistory.push({role:'assistant',content:reply});
+    const rendered=typeof marked!=='undefined'?marked.parse(reply):reply;
+    addMessage('ai',rendered,true);
+  }catch(e){
+    document.getElementById('typing-indicator')?.remove();
+    addMessage('ai',normalizeError(e));
+  }
+}
+
+function flipCard(el){
+  el.classList.toggle('flipped');
+  const hint=el.querySelector('.fc-hint');
+  if(hint)hint.textContent=el.classList.contains('flipped')?'Tap to hide':'Tap to reveal';
+}
+
+async function generateFlashcards(){
+  const topic=document.getElementById('fcTopic').value.trim();
+  if(!topic||!ANTHROPIC_API_KEY)return;
+  const loading=document.getElementById('fcLoading');
+  loading.classList.remove('hidden');
+  const grid=document.getElementById('fcGrid');
+  grid.innerHTML='';
+
+  try{
+    const raw=await callClaude(
+      'Generate exactly 6 flashcards as JSON array. Each object has "q" (question, <=12 words) and "a" (answer, <=25 words). Return ONLY the JSON array, no markdown, no other text.',
+      [{role:'user',content:`Topic: ${topic}`}],
+      1024
+    );
+    loading.classList.add('hidden');
+    const cards=parseModelJson(raw,'[]');
+    cards.forEach(c=>{
+      const card=document.createElement('div');
+      card.className='fc-card';card.onclick=()=>flipCard(card);
+      card.innerHTML=`<div class="fc-front">${c.q}</div><div class="fc-back">${c.a}</div><div class="fc-hint">Tap to reveal</div>`;
+      grid.appendChild(card);
+    });
+  }catch(e){
+    loading.classList.add('hidden');
+    grid.innerHTML=`<div style="color:#ef4444;font-size:13px;grid-column:1/-1">${normalizeError(e)}</div>`;
+  }
+}
+
+let qAnswered=false;
+async function generateQuiz(){
+  const topic=document.getElementById('qzTopic').value.trim();
+  if(!topic||!ANTHROPIC_API_KEY)return;
+  const loading=document.getElementById('qzLoading');
+  loading.classList.remove('hidden');
+  document.getElementById('qzExplain').style.display='none';
+
+  try{
+    const raw=await callClaude(
+      'Generate a multiple choice question as JSON with fields: "q" (question), "options" (array of 4 strings), "correct" (index 0-3 of correct option), "explanation" (1-2 sentence explanation of the correct answer). Return ONLY the JSON object.',
+      [{role:'user',content:`Topic: ${topic}`}],
+      1024
+    );
+    loading.classList.add('hidden');
+    const q=parseModelJson(raw,'{}');
+    document.getElementById('qzQuestion').textContent=q.q;
+    const opts=document.getElementById('qzOptions');
+    opts.innerHTML='';
+    q.options.forEach((o,i)=>{
+      const btn=document.createElement('button');
+      btn.className='qz-opt';
+      btn.textContent=o;
+      btn.onclick=()=>checkAnswer(btn,i===q.correct,q.explanation,opts);
+      opts.appendChild(btn);
+    });
+    qAnswered=false;
+    document.getElementById('qzExplain').style.display='none';
+  }catch(e){
+    loading.classList.add('hidden');
+    document.getElementById('qzQuestion').textContent=normalizeError(e);
+    document.getElementById('qzOptions').innerHTML='';
+  }
+}
+
+function checkAnswer(el,correct,explanation,optsContainer){
+  if(qAnswered)return;qAnswered=true;
+  totalQ++;
+  el.classList.add(correct?'correct':'wrong');
+  if(!correct){
+    [...(optsContainer||document.getElementById('qzOptions')).children].forEach((b,i)=>{
+      if(b!==el)b.style.opacity='.4';
+    });
+  }
+  if(correct)score++;
+  document.getElementById('scoreDisplay').textContent=score;
+  if(explanation){
+    const ex=document.getElementById('qzExplain');
+    ex.textContent=explanation;ex.style.display='block';
+  }
+}
+</script>
