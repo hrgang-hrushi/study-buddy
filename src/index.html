@@ -12,6 +12,13 @@
     --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
     --r:10px;--r2:14px;--r3:18px;
   }
+  [data-theme="light"]{
+    --bg:#f5f5f5;--surface:#ffffff;--surface2:#f0f0f0;--surface3:#e5e5e5;
+    --border:#dddddd;--border2:#cccccc;--border3:#bbbbbb;
+    --text:#000000;--muted:#444444;--subtle:#666666;
+    --accent:#00aa00;--accent2:#00cc00;--accent-glow:#00aa0020;
+    --green:#00aa00;--amber:#ff8800;--red:#dd0000;
+  }
   body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:600px;overflow:hidden}
 
   /* ─── SCREENS ─── */
@@ -157,7 +164,7 @@
   .hidden{display:none!important}
 </style>
 
-<div style="position:relative;width:100%;height:600px;overflow:hidden;background:#0a0a0b;font-family:'DM Sans',sans-serif">
+<div style="position:relative;width:100%;height:600px;overflow:hidden;background:var(--bg);font-family:'DM Sans',sans-serif">
 
 <!-- INIT SCREEN -->
 <div class="screen active" id="init">
@@ -174,7 +181,7 @@
     Chat · Flashcards · Quizzes — all in one
   </div>
   <div style="position:relative;width:380px">
-    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="width:100%;background:#0a0a0a;border:0.5px solid #ffffff18;border-radius:14px;padding:14px 48px 14px 18px;font-size:14px;color:#00ff41;font-family:'DM Mono',monospace;outline:none;transition:border-color .15s" />
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="width:100%;background:var(--surface);border:0.5px solid var(--border2);border-radius:14px;padding:14px 48px 14px 18px;font-size:14px;color:var(--text);font-family:'DM Mono',monospace;outline:none;transition:border-color .15s" />
     <button onclick="toggleKey()" id="eyeBtn" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:#6b6b75;cursor:pointer;font-size:14px;padding:4px">👁</button>
   </div>
   <button onclick="initApp()" style="width:380px;margin-top:12px;background:#00ff41;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;letter-spacing:.01em" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
@@ -218,6 +225,9 @@
 
     <div class="sb-spacer"></div>
     <div class="sb-bottom">
+      <div class="sb-key-pill" onclick="toggleTheme()" style="margin-bottom:8px;cursor:pointer">
+        <span class="sb-key-label" id="themeLabel">🌙 Dark</span>
+      </div>
       <div class="sb-key-pill">
         <div class="sb-key-dot"></div>
         <span class="sb-key-label" id="keyLabel">Claude...</span>
@@ -229,7 +239,7 @@
   <div class="main">
     <div class="topbar">
       <span class="topbar-title" id="topbarTitle">AI Tutor</span>
-      <span style="font-size:11px;color:#33ff66;background:#0a0a0a;border:0.5px solid #ffffff18;border-radius:999px;padding:4px 10px;font-family:'DM Mono',monospace" id="modelChip">Claude Opus</span>
+      <span style="font-size:11px;color:var(--accent2);background:var(--surface);border:0.5px solid var(--border);border-radius:999px;padding:4px 10px;font-family:'DM Mono',monospace" id="modelChip">Claude Opus</span>
       <div class="topbar-mode" id="topbarMode">
         <button class="tm-btn active" onclick="setMode('explain',this)">Explain</button>
         <button class="tm-btn" onclick="setMode('socratic',this)">Socratic</button>
@@ -324,7 +334,7 @@
             <button class="qz-opt" onclick="checkAnswer(this,false)">Core Processing Utility</button>
           </div>
         </div>
-        <div id="qzExplain" style="display:none;background:#0a0a0a;border:0.5px solid #ffffff0f;border-radius:14px;padding:16px;font-size:13px;color:#33ff66;line-height:1.7"></div>
+        <div id="qzExplain" style="display:none;background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:16px;font-size:13px;color:var(--accent2);line-height:1.7"></div>
       </div>
     </div>
 
@@ -382,6 +392,18 @@ const SYSTEM = {
 function toggleKey(){
   const i=document.getElementById('apiKeyInput');
   i.type=i.type==='password'?'text':'password';
+}
+
+function toggleTheme(){
+  const html=document.documentElement;
+  const label=document.getElementById('themeLabel');
+  if(html.getAttribute('data-theme')==='light'){
+    html.setAttribute('data-theme','dark');
+    label.textContent='🌙 Dark';
+  }else{
+    html.setAttribute('data-theme','light');
+    label.textContent='☀️ Light';
+  }
 }
 
 function initApp(){
