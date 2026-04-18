@@ -181,7 +181,7 @@
     Chat · Flashcards · Quizzes — all in one
   </div>
   <div style="position:relative;width:380px">
-    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="width:100%;background:var(--surface);border:0.5px solid var(--border2);border-radius:14px;padding:14px 48px 14px 18px;font-size:14px;color:var(--text);font-family:'DM Mono',monospace;outline:none;transition:border-color .15s" />
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." oninput="handleKeyInput(this.value)" style="width:100%;background:var(--surface);border:0.5px solid var(--border2);border-radius:14px;padding:14px 48px 14px 18px;font-size:14px;color:var(--text);font-family:'DM Mono',monospace;outline:none;transition:border-color .15s" />
     <button onclick="toggleKey()" id="eyeBtn" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px">
       <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>
     </button>
@@ -388,13 +388,63 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
 let ANTHROPIC_API_KEY = '';
-let CLAUDE_MODEL = 'claude-opus-4-5';
+let CURRENT_PROVIDER = 'anthropic';
+let CURRENT_MODEL = 'claude-opus-4-5';
 
-const MODELS = [
-  { id: 'claude-opus-4-5', name: 'Opus 4.5', desc: 'Most capable' },
-  { id: 'claude-sonnet-4-20250514', name: 'Sonnet 4', desc: 'Balanced' },
-  { id: 'claude-haiku-3-5', name: 'Haiku 3.5', desc: 'Fastest' }
-];
+const PROVIDERS = {
+  anthropic: {
+    name: 'Anthropic',
+    prefix: 'sk-ant-',
+    models: [
+      { id: 'claude-opus-4-5', name: 'Opus 4.5', desc: 'Most capable' },
+      { id: 'claude-sonnet-4-20250514', name: 'Sonnet 4', desc: 'Balanced' },
+      { id: 'claude-haiku-3-5', name: 'Haiku 3.5', desc: 'Fastest' }
+    ]
+  },
+  openai: {
+    name: 'OpenAI',
+    prefix: 'sk-',
+    models: [
+      { id: 'gpt-4o', name: 'GPT-4o', desc: 'Most capable' },
+      { id: 'gpt-4o-mini', name: 'GPT-4o Mini', desc: 'Fast & cheap' },
+      { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', desc: 'Strong' }
+    ]
+  },
+  groq: {
+    name: 'Groq',
+    prefix: 'gsk_',
+    models: [
+      { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B', desc: 'Fast' },
+      { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7B', desc: 'Balanced' },
+      { id: 'whisper-large-v3', name: 'Whisper', desc: 'Speech' }
+    ]
+  },
+  google: {
+    name: 'Google',
+    prefix: 'AIza',
+    models: [
+      { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', desc: 'Fast' },
+      { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', desc: 'Capable' },
+      { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', desc: 'Balanced' }
+    ]
+  }
+};
+
+function detectProvider(key) {
+  if (key.startsWith('sk-ant-')) return 'anthropic';
+  if (key.startsWith('gsk_')) return 'groq';
+  if (key.startsWith('AIza')) return 'google';
+  if (key.startsWith('sk-')) return 'openai';
+  return 'anthropic';
+}
+
+function updateModelSelect(provider) {
+  const select = document.getElementById('modelSelect');
+  const p = PROVIDERS[provider];
+  select.innerHTML = p.models.map(m => 
+    `<option value="${m.id}">${m.name} (${m.desc})</option>`
+  ).join('');
+}
 let currentMode = 'explain';
 let chatHistory = [];
 let score = 0, totalQ = 0;
@@ -408,6 +458,16 @@ const SYSTEM = {
 function toggleKey(){
   const i=document.getElementById('apiKeyInput');
   i.type=i.type==='password'?'text':'password';
+}
+
+function handleKeyInput(key) {
+  if (key.length > 3) {
+    const provider = detectProvider(key);
+    if (provider !== CURRENT_PROVIDER) {
+      CURRENT_PROVIDER = provider;
+      updateModelSelect(provider);
+    }
+  }
 }
 
 function toggleTheme(){
@@ -426,11 +486,12 @@ function initApp(){
   const k=document.getElementById('apiKeyInput').value.trim();
   if(!k){document.getElementById('initError').style.display='block';return;}
   ANTHROPIC_API_KEY=k;
-  CLAUDE_MODEL=document.getElementById('modelSelect').value;
+  CURRENT_PROVIDER=detectProvider(k);
+  CURRENT_MODEL=document.getElementById('modelSelect').value;
   document.getElementById('init').classList.remove('active');
   document.getElementById('app').classList.add('active');
-  document.getElementById('keyLabel').textContent='Claude '+k.substring(0,10)+'...';
-  document.getElementById('modelChip').textContent=MODELS.find(m=>m.id===CLAUDE_MODEL)?.name||CLAUDE_MODEL;
+  document.getElementById('keyLabel').textContent=PROVIDERS[CURRENT_PROVIDER].name+' '+k.substring(0,10)+'...';
+  document.getElementById('modelChip').textContent=PROVIDERS[CURRENT_PROVIDER].models.find(m=>m.id===CURRENT_MODEL)?.name||CURRENT_MODEL;
 }
 
 function switchPanel(name, el){
@@ -523,31 +584,76 @@ function parseModelJson(raw, fallback){
   }
 }
 
-async function callClaude(systemPrompt, messages, maxOutputTokens=1024){
-  const endpoint='https://api.anthropic.com/v1/messages';
-  const body={
-    model: CLAUDE_MODEL,
-    max_tokens: maxOutputTokens,
-    system: systemPrompt,
-    messages: messages
-  };
-
-  const r=await fetch(endpoint,{
-    method:'POST',
-    headers:{
+async function callAI(systemPrompt, messages, maxOutputTokens=1024){
+  let endpoint, body, headers;
+  
+  if (CURRENT_PROVIDER === 'anthropic') {
+    endpoint = 'https://api.anthropic.com/v1/messages';
+    body = {
+      model: CURRENT_MODEL,
+      max_tokens: maxOutputTokens,
+      system: systemPrompt,
+      messages: messages
+    };
+    headers = {
       'Content-Type': 'application/json',
       'x-api-key': ANTHROPIC_API_KEY,
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body:JSON.stringify(body)
-  });
-  const d=await r.json();
-  if(!r.ok){
-    const errMsg=d?.error?.message||('HTTP '+r.status);
+    };
+  } else if (CURRENT_PROVIDER === 'openai') {
+    endpoint = 'https://api.openai.com/v1/chat/completions';
+    body = {
+      model: CURRENT_MODEL,
+      max_tokens: maxOutputTokens,
+      messages: [{role: 'system', content: systemPrompt}, ...messages]
+    };
+    headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+ANTHROPIC_API_KEY
+    };
+  } else if (CURRENT_PROVIDER === 'groq') {
+    endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+    body = {
+      model: CURRENT_MODEL,
+      max_tokens: maxOutputTokens,
+      messages: [{role: 'system', content: systemPrompt}, ...messages]
+    };
+    headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+ANTHROPIC_API_KEY
+    };
+  } else if (CURRENT_PROVIDER === 'google') {
+    endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${CURRENT_MODEL}:generateContent?key=${ANTHROPIC_API_KEY}`;
+    body = {
+      contents: messages.map(m => ({role: m.role === 'assistant' ? 'model' : 'user', parts: [{text: m.content}]})),
+      generationConfig: {maxOutputTokens}
+    };
+    if (systemPrompt) body.systemInstruction = {parts: [{text: systemPrompt}]};
+    headers = {'Content-Type': 'application/json'};
+  }
+
+  const r = await fetch(endpoint, {method: 'POST', headers, body: JSON.stringify(body)});
+  const d = await r.json();
+  
+  if (!r.ok) {
+    const errMsg = d?.error?.message || d?.error?.details || ('HTTP ' + r.status);
     throw new Error(errMsg);
   }
-  return extractClaudeText(d);
+
+  if (CURRENT_PROVIDER === 'anthropic') {
+    const text = d.content?.find(c => c.type === 'text')?.text?.trim();
+    if (!text) throw new Error('Empty response');
+    return text;
+  } else if (CURRENT_PROVIDER === 'google') {
+    const text = d.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (!text) throw new Error('Empty response');
+    return text;
+  } else {
+    const text = d.choices?.[0]?.message?.content?.trim();
+    if (!text) throw new Error('Empty response');
+    return text;
+  }
 }
 
 async function sendMessage(){
@@ -563,7 +669,7 @@ async function sendMessage(){
   const sysPrompt=SYSTEM[currentMode]+(activePills?` Focus on: ${activePills}.`:'');
 
   try{
-    const reply=await callClaude(sysPrompt, chatHistory, 1024);
+    const reply=await callAI(sysPrompt, chatHistory, 1024);
     document.getElementById('typing-indicator')?.remove();
     chatHistory.push({role:'assistant',content:reply});
     const rendered=typeof marked!=='undefined'?marked.parse(reply):reply;
@@ -589,7 +695,7 @@ async function generateFlashcards(){
   grid.innerHTML='';
 
   try{
-    const raw=await callClaude(
+    const raw=await callAI(
       'Generate exactly 6 flashcards as JSON array. Each object has "q" (question, <=12 words) and "a" (answer, <=25 words). Return ONLY the JSON array, no markdown, no other text.',
       [{role:'user',content:`Topic: ${topic}`}],
       1024
@@ -617,7 +723,7 @@ async function generateQuiz(){
   document.getElementById('qzExplain').style.display='none';
 
   try{
-    const raw=await callClaude(
+    const raw=await callAI(
       'Generate a multiple choice question as JSON with fields: "q" (question), "options" (array of 4 strings), "correct" (index 0-3 of correct option), "explanation" (1-2 sentence explanation of the correct answer). Return ONLY the JSON object.',
       [{role:'user',content:`Topic: ${topic}`}],
       1024
