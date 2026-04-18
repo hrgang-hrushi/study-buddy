@@ -168,7 +168,7 @@
 
 <!-- INIT SCREEN -->
 <div class="screen active" id="init">
-  <div style="font-size:12px;color:#6b6b75;letter-spacing:.15em;text-transform:uppercase;margin-bottom:52px;display:flex;align-items:center;gap:8px">
+  <div style="font-size:12px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:52px;display:flex;align-items:center;gap:8px">
     <div style="width:20px;height:20px;border-radius:5px;background:#00ff41;display:flex;align-items:center;justify-content:center">
       <svg viewBox="0 0 12 12" fill="white" width="8" height="8"><path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
     </div>
@@ -177,12 +177,14 @@
   <div style="font-size:36px;font-weight:300;color:#00ff41;line-height:1.15;text-align:center;margin-bottom:10px;letter-spacing:-.02em">
     Your <span style="color:#33ff66;font-style:italic">AI-powered</span><br>study engine
   </div>
-  <div style="font-size:15px;color:#6b6b75;margin-bottom:40px;text-align:center;font-weight:300">
+  <div style="font-size:15px;color:var(--muted);margin-bottom:40px;text-align:center;font-weight:300">
     Chat · Flashcards · Quizzes — all in one
   </div>
   <div style="position:relative;width:380px">
     <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="width:100%;background:var(--surface);border:0.5px solid var(--border2);border-radius:14px;padding:14px 48px 14px 18px;font-size:14px;color:var(--text);font-family:'DM Mono',monospace;outline:none;transition:border-color .15s" />
-    <button onclick="toggleKey()" id="eyeBtn" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:#6b6b75;cursor:pointer;font-size:14px;padding:4px">👁</button>
+    <button onclick="toggleKey()" id="eyeBtn" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px">
+      <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>
+    </button>
   </div>
   <button onclick="initApp()" style="width:380px;margin-top:12px;background:#00ff41;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;letter-spacing:.01em" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
     Launch StudyBuddy →
@@ -226,7 +228,7 @@
     <div class="sb-spacer"></div>
     <div class="sb-bottom">
       <div class="sb-key-pill" onclick="toggleTheme()" style="margin-bottom:8px;cursor:pointer">
-        <span class="sb-key-label" id="themeLabel">🌙 Dark</span>
+        <span class="sb-key-label" id="themeLabel">Dark</span>
       </div>
       <div class="sb-key-pill">
         <div class="sb-key-dot"></div>
@@ -254,16 +256,16 @@
           <div class="msg-avatar">B</div>
           <div class="msg-body">
             <div class="msg-label">Buddy</div>
-            <div class="msg-bubble">Hey Hrushi 👋 I'm your personal AI tutor. Ask me <strong>anything</strong> — concepts, problems, summaries, derivations. What are we studying today?</div>
+            <div class="msg-bubble">Hey Hrushi I'm your personal AI tutor. Ask me <strong>anything</strong> — concepts, problems, summaries, derivations. What are we studying today?</div>
           </div>
         </div>
       </div>
       <div class="chat-input-area">
         <div class="chat-modes">
-          <button class="mode-pill on" onclick="togglePill(this,'explain-deep')">🔍 Deep explain</button>
-          <button class="mode-pill" onclick="togglePill(this,'examples')">💡 Examples</button>
-          <button class="mode-pill" onclick="togglePill(this,'eli5')">🧒 ELI5</button>
-          <button class="mode-pill" onclick="togglePill(this,'code')">💻 Code mode</button>
+          <button class="mode-pill on" onclick="togglePill(this,'explain-deep')">Deep explain</button>
+          <button class="mode-pill" onclick="togglePill(this,'examples')">Examples</button>
+          <button class="mode-pill" onclick="togglePill(this,'eli5')">ELI5</button>
+          <button class="mode-pill" onclick="togglePill(this,'code')">Code mode</button>
         </div>
         <div class="input-row">
           <textarea class="chat-textarea" id="chatInput" placeholder="Ask anything... (Enter to send)" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
@@ -283,7 +285,7 @@
         </div>
         <div id="fcLoading" class="hidden">
           <div class="loading-bar"></div>
-          <div style="font-size:12px;color:#6b6b75;text-align:center;margin-top:8px">Generating cards...</div>
+          <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px">Generating cards...</div>
         </div>
         <div class="fc-grid" id="fcGrid">
           <div class="fc-card" onclick="flipCard(this)">
@@ -319,7 +321,7 @@
         </div>
         <div id="qzLoading" class="hidden">
           <div class="loading-bar"></div>
-          <div style="font-size:12px;color:#6b6b75;text-align:center;margin-top:8px">Building quiz...</div>
+          <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px">Building quiz...</div>
         </div>
         <div class="qz-header">
           <span style="font-size:13px;font-weight:500;color:#00ff41">Current Question</span>
@@ -343,7 +345,7 @@
       <div class="notes-panel">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <span style="font-size:14px;font-weight:500;color:#00ff41">Study Notes</span>
-          <span style="font-size:12px;color:#6b6b75">Auto-saved from chats</span>
+          <span style="font-size:12px;color:var(--muted)">Auto-saved from chats</span>
         </div>
         <div class="note-card">
           <div class="note-header">
@@ -399,10 +401,10 @@ function toggleTheme(){
   const label=document.getElementById('themeLabel');
   if(html.getAttribute('data-theme')==='light'){
     html.setAttribute('data-theme','dark');
-    label.textContent='🌙 Dark';
+    label.textContent='Dark';
   }else{
     html.setAttribute('data-theme','light');
-    label.textContent='☀️ Light';
+    label.textContent='Light';
   }
 }
 
